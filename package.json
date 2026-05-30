@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "dev": "wxt -b firefox --mv3",
+    "dev:chrome": "wxt --mv3",
+    "zip": "wxt zip --mv3 && wxt zip -b firefox --mv3",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "postinstall": "wxt prepare"
+  },
+  "devDependencies": {
+    "@wxt-dev/auto-icons": "^1.1.1",
+    "lexical": "^0.45.0",
+    "oxfmt": "^0.53.0",
+    "typescript": "^6.0.3",
+    "wxt": "^0.20.26"
+  }
+}

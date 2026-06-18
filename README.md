@@ -7,6 +7,7 @@ text area on the page.
 So far only the following sites are supported:
 
 - basecamp.com
+- slack.com
 
 ## Installation
 

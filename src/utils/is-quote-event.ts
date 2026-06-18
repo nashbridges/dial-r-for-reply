@@ -1,6 +1,17 @@
 export const isQuoteEvent = (event: KeyboardEvent) => {
+  const target = event.target as HTMLElement;
+
+  if (!target) {
+    return false;
+  }
+
   // do not prevent typing 'r' in text fields
-  if (document.activeElement?.tagName !== 'BODY') {
+  if (
+    !(
+      target.tagName === 'BODY' ||
+      (target.tagName === 'DIV' && !target.hasAttribute('contenteditable'))
+    )
+  ) {
     return false;
   }
 

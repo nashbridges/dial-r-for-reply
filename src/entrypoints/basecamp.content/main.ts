@@ -1,10 +1,8 @@
-import type { ElementNode } from 'lexical';
-
 import { isQuoteEvent } from '~/utils/is-quote-event';
 import { getSelectionRangesAsHtml, isSelectionNotEmpty } from '~/utils/selection';
 
 import { ensureNoAddCommentBanner } from './editor-banner';
-import { LexxyEditor } from './lexxy-editor';
+import { LexxyEditor, type ElementNode } from './lexxy-editor';
 
 export const main = () => {
   let editor: LexxyEditor;
@@ -30,17 +28,15 @@ export const main = () => {
     ensureNoAddCommentBanner();
 
     const rangesAsHtml = getSelectionRangesAsHtml(selection);
-    let firstInsertedParagraphNode: ElementNode | undefined;
+    let firstCaretPositionNode: ElementNode | undefined;
 
-    rangesAsHtml.forEach((rangeAsHtml, idx) => {
-      editor.insertQuote({ replaceEmpty: idx === 0 });
-      editor.pasteHtml(rangeAsHtml);
-      const insertedParagraphNode = editor.insertParagraph();
-      firstInsertedParagraphNode ??= insertedParagraphNode;
+    rangesAsHtml.forEach(rangeAsHtml => {
+      const caretPositionNode = editor.pasteQuotedHtml(rangeAsHtml);
+      firstCaretPositionNode ??= caretPositionNode;
     });
 
-    if (firstInsertedParagraphNode) {
-      editor.selectNode(firstInsertedParagraphNode);
+    if (firstCaretPositionNode) {
+      editor.select(firstCaretPositionNode);
     }
   });
 };

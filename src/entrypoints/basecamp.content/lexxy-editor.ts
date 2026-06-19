@@ -1,4 +1,5 @@
 import type { LexicalEditor, LexicalNode, ElementNode, RangeSelection } from 'lexical';
+export { ElementNode };
 
 // An essential wrapper around https://github.com/basecamp/lexxy, which itself
 // is based on https://github.com/facebook/lexical.
@@ -21,14 +22,23 @@ export class LexxyEditor {
     return children.length === 0 || children.every(child => this.isNodeEmpty(child));
   }
 
+  pasteQuotedHtml(htmlString: string) {
+    // first prepare a quote node, then paste the content -- this is how lexical works
+    this.#insertQuote();
+    this.#pasteHtml(htmlString);
+    // insert a blank line outside the quote to place the caret
+    const caretPositionNode = this.#insertParagraph();
+    return caretPositionNode;
+  }
+
   // Use `discrete: true`, so that the next steps get up-to-date state
   // immediately after the previous one has been executed.
   // https://github.com/facebook/lexical/blob/9a036d4c043/packages/lexical-website/docs/faq.md?plain=1#L40
-  updateDiscrete(fn: () => void) {
+  #updateDiscrete(fn: () => void) {
     this.lexxy.update(fn, { discrete: true });
   }
 
-  dispatchCommand(type: string, data: unknown) {
+  #dispatchCommand(type: string, data: unknown) {
     let actualCommand;
 
     // Resorting to an internal API as we don't have access to the scope of
@@ -45,12 +55,12 @@ export class LexxyEditor {
       return;
     }
 
-    this.updateDiscrete(() => {
+    this.#updateDiscrete(() => {
       this.lexxy.dispatchCommand(actualCommand, data);
     });
   }
 
-  pasteHtml(htmlString: string) {
+  #pasteHtml(htmlString: string) {
     const clipboardData = new DataTransfer();
     clipboardData.setData('text/html', htmlString);
 
@@ -61,14 +71,14 @@ export class LexxyEditor {
       preventDefault: () => {},
     };
 
-    this.dispatchCommand('PASTE_COMMAND', clipboardEventStub);
+    this.#dispatchCommand('PASTE_COMMAND', clipboardEventStub);
   }
 
   getEditorState() {
     return this.lexxy.getEditorState();
   }
 
-  getCurrentTopLevelNode() {
+  #getCurrentTopLevelNode() {
     const { _selection: selection } = this.getEditorState();
 
     if (!(selection as RangeSelection)?.anchor) {
@@ -80,7 +90,7 @@ export class LexxyEditor {
     return anchorNode?.getTopLevelElement();
   }
 
-  getNodeClass(className: string) {
+  #getNodeClass(className: string) {
     const nodeDefinition = this.lexxy._nodes.get(className);
 
     if (!nodeDefinition) {
@@ -91,23 +101,28 @@ export class LexxyEditor {
     return nodeDefinition.klass;
   }
 
-  insertQuote({ replaceEmpty }: { replaceEmpty?: boolean } = {}) {
+  #insertQuote() {
     let quoteNode: ElementNode | undefined;
 
-    const QuoteNode = this.getNodeClass('quote');
+    const QuoteNode = this.#getNodeClass('quote');
     if (!QuoteNode) {
       return;
     }
 
-    this.updateDiscrete(() => {
-      const currentTopLevelNode = this.getCurrentTopLevelNode();
+    this.#updateDiscrete(() => {
+      const currentTopLevelNode = this.#getCurrentTopLevelNode();
       if (!currentTopLevelNode) {
         return;
       }
 
       quoteNode = new QuoteNode() as ElementNode;
 
-      if (replaceEmpty && LexxyEditor.isNodeEmpty(currentTopLevelNode)) {
+      const isCurrentNodeASingleEmptyLine =
+        LexxyEditor.isNodeEmpty(currentTopLevelNode) &&
+        !currentTopLevelNode.getPreviousSibling() &&
+        !currentTopLevelNode.getNextSibling();
+
+      if (isCurrentNodeASingleEmptyLine) {
         currentTopLevelNode.replace(quoteNode);
       } else {
         currentTopLevelNode.insertAfter(quoteNode);
@@ -119,16 +134,16 @@ export class LexxyEditor {
     return quoteNode;
   }
 
-  insertParagraph() {
+  #insertParagraph() {
     let paragraphNode: ElementNode | undefined;
 
-    const ParagraphNode = this.getNodeClass('paragraph');
+    const ParagraphNode = this.#getNodeClass('paragraph');
     if (!ParagraphNode) {
       return;
     }
 
-    this.updateDiscrete(() => {
-      const currentTopLevelNode = this.getCurrentTopLevelNode();
+    this.#updateDiscrete(() => {
+      const currentTopLevelNode = this.#getCurrentTopLevelNode();
       if (!currentTopLevelNode) {
         return;
       }
@@ -141,8 +156,8 @@ export class LexxyEditor {
     return paragraphNode;
   }
 
-  selectNode(node: ElementNode) {
-    this.updateDiscrete(() => {
+  select(node: ElementNode) {
+    this.#updateDiscrete(() => {
       node.select();
     });
   }

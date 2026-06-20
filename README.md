@@ -4,6 +4,10 @@ This is a browser extension that allows Github-like quoting. You select a text
 on a discussion page, hit "r", and that inserts the selection as a quote in the
 text area on the page.
 
+In Firefox multiple quoting is supported. Select first chunk of text, hold
+Cmd/Ctrl, then select the next one and so on. Finally press "r" -- each chunk
+will be quoted separately.
+
 So far only the following sites are supported:
 
 - basecamp.com

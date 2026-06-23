@@ -30,3 +30,11 @@ Check the `.output` folder.
 ## Issues
 
 Use [Github issues](https://github.com/nashbridges/dial-r-for-reply/issues) to file a ticket.
+
+## Contributing
+
+This project is open source and close contribution. I don't have mental
+capacity to support sites I don't use myself, or to accept features I don't
+need.
+
+You are still allowed to reuse and/or modify the code as you wish.

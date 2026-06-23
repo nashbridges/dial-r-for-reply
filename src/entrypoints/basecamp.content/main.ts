@@ -1,6 +1,7 @@
 import { isQuoteEvent } from '~/utils/is-quote-event';
 import { getSelectionRangesAsHtml, isSelectionNotEmpty } from '~/utils/selection';
 
+import { getCleanSelection } from './clean-selection';
 import { ensureNoAddCommentBanner } from './editor-banner';
 import { LexxyEditor, type ElementNode } from './lexxy-editor';
 
@@ -31,7 +32,8 @@ export const main = () => {
     let firstCaretPositionNode: ElementNode | undefined;
 
     rangesAsHtml.forEach(rangeAsHtml => {
-      const caretPositionNode = editor.pasteQuotedHtml(rangeAsHtml);
+      const cleanHtml = getCleanSelection(rangeAsHtml);
+      const caretPositionNode = editor.pasteQuotedHtml(cleanHtml);
       firstCaretPositionNode ??= caretPositionNode;
     });
 

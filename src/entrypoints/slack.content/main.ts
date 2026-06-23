@@ -1,6 +1,7 @@
 import { isQuoteEvent } from '~/utils/is-quote-event';
 import { getSelectionRangesAsHtml, isSelectionNotEmpty } from '~/utils/selection';
 
+import { getCleanSelection } from './clean-selection';
 import { getCurrentEditor } from './current-editor';
 import { Range } from './quill-editor';
 
@@ -25,7 +26,8 @@ export const main = () => {
       let firstInsertedCaretPosition: Range | undefined;
 
       rangesAsHtml.forEach(rangeAsHtml => {
-        const insertedCaretPosition = currentEditor.pasteQuotedHtml(rangeAsHtml);
+        const cleanHtml = getCleanSelection(rangeAsHtml);
+        const insertedCaretPosition = currentEditor.pasteQuotedHtml(cleanHtml);
         firstInsertedCaretPosition ??= insertedCaretPosition;
       });
 

@@ -37,5 +37,8 @@ export class QuillEditor {
 
   select(selection: Range) {
     this.quill.setSelection(selection);
+    // Quill automatically scrolls to the text area by calling `scrollSelectionIntoView`
+    // within the `setSelection`. For some reason that stopped working.
+    this.quill.container.scrollIntoView();
   }
 }

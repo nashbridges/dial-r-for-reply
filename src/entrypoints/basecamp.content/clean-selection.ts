@@ -4,8 +4,8 @@ const EDGE_EMPTY_BLOCKS_RE = new RegExp(
   'g',
 );
 
-// When selecting an inner paragraph, it's easy to include the surrounding
-// line breaks into the selection -- remove them.
+// When selecting an inner paragraph by click & drag, it's easy to include
+// the surrounding line breaks into the selection -- remove them.
 export const getCleanSelection = (htmlString: string) => {
   return htmlString.replaceAll(EDGE_EMPTY_BLOCKS_RE, '');
 };

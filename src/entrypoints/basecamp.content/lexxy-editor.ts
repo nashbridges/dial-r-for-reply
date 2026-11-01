@@ -5,8 +5,8 @@ export { ElementNode };
 // is based on https://github.com/facebook/lexical.
 // This only uses types from lexical, but not the code. Two reasons for that:
 //   1. we don't want to bundle the whole library along with the extension.
-//   2. dispatch commands related `$xxx` functions can't be used anyway as they
-//      would hold different references comparing to what lexxy sees.
+//   2. `$xxx` functions exposed by lexical (such as `$getRoot`) can't be used
+//      anyway as they would hold different references compared to what lexxy sees.
 export class LexxyEditor {
   lexxy: LexicalEditor;
 
@@ -23,10 +23,10 @@ export class LexxyEditor {
   }
 
   pasteQuotedHtml(htmlString: string) {
-    // first prepare a quote node, then paste the content -- this is how lexical works
+    // First prepare a quote node, then paste the content -- this is how lexical works
     this.#insertQuote();
     this.#pasteHtml(htmlString);
-    // insert a blank line outside the quote to place the caret
+    // Insert a blank line outside the quote to place the caret
     const caretPositionNode = this.#insertParagraph();
     return caretPositionNode;
   }

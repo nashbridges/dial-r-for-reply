@@ -15,10 +15,20 @@ So far only the following sites are supported:
 
 ## Installation
 
-Use the corresponding extension stores:
+### As a standalone browser extension
 
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/dial-r-for-reply/)
 - [Chrome](https://chromewebstore.google.com/detail/lmdlejimkgcjijaphmafldghldplolgd/)
+
+### As a userscript
+
+- [basecamp.com](https://raw.githubusercontent.com/nashbridges/dial-r-for-reply/refs/heads/main/userscripts/basecamp.js)
+- [slack.com](https://raw.githubusercontent.com/nashbridges/dial-r-for-reply/refs/heads/main/userscripts/slack.js)
+
+Notice, both scripts require to be injected into the page context (_not_ the content context). That means they will not
+work by default in Firefox on sites with CSP enabled (which, at the moment of writing this, slack.com does).
+See [Firemonkey's CSP exlude](https://erosman.github.io/firemonkey/src/content/help.html#csp-exclude) as an example
+workaround, or use the standalone extension. There should be no problems with scripts injecting in Chrome.
 
 ## Build from source
 
